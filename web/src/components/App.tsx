@@ -294,31 +294,37 @@ function App() {
                       height: 600,
                     }}
                   >
-                    <Typography>
-                      Messages
-                    </Typography>
+                    {userId ? <div>
+                      <Typography>
+                        Messages
+                      </Typography>
 
-                    <Button
-                      variant="contained"
-                      onClick={handleClearMessagesClick}
-                    >
-                      Clear Messages
-                    </Button>
-
-                    {
-                      messages.map((message, index) => <Typography
-                        key={`message-${index}`}
+                      <Button
+                        variant="contained"
+                        onClick={handleClearMessagesClick}
                       >
-                        {message}
-                      </Typography>)
-                    }
+                        Clear Messages
+                      </Button>
 
-                    <Button
-                      variant="contained"
-                      onClick={handleAddMessageClick}
-                    >
-                      Add Message
-                    </Button>
+                      {
+                        messages.map((message, index) => <Typography
+                          key={`message-${index}`}
+                        >
+                          {message}
+                        </Typography>)
+                      }
+
+                      <Button
+                        variant="contained"
+                        onClick={handleAddMessageClick}
+                      >
+                        Add Message
+                      </Button>
+                    </div> : <div>
+                      <Typography>
+                        Authenticating...
+                      </Typography>
+                    </div>}
                   </Paper>
                 </Grid>
               </Grid>
