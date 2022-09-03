@@ -11,9 +11,9 @@
       "firebase-debug.*.log"
     ],
     "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
+    ],
+    "source": "functions"
   },
   "emulators": {
     "auth": {
@@ -27,6 +27,29 @@
     },
     "ui": {
       "enabled": true
+    },
+    "hosting": {
+      "port": 5551
     }
+  },
+  "hosting": {
+    "predeploy": "npm run --prefix web build",
+    "public": "web/build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/addMessage",
+        "function": "addMessage",
+        "region": "us-central1"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
