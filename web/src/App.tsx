@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, Firestore, DocumentData, connectFirestoreEmulator } from 'firebase/firestore';
-import { getAuth, signInAnonymously, connectAuthEmulator} from "firebase/auth";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
+import React, { useEffect, useState } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import { initializeApp } from 'firebase/app'
+import { getFirestore, collection, getDocs, Firestore, DocumentData, connectFirestoreEmulator } from 'firebase/firestore'
+import { getAuth, signInAnonymously, connectAuthEmulator } from "firebase/auth"
+import { getFunctions, httpsCallable, connectFunctionsEmulator, Functions } from "firebase/functions"
 
+import Button from '@mui/material/Button'
 
 
 const firebaseConfig = {
@@ -19,15 +20,19 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+const db = getFirestore(app)
+
+const shouldUseFirebaseEmulators = process.env.NODE_ENV === "development"
+
 const functions = getFunctions(app, "https://f3demo-1e9ca.web.app");
 
-// connectFirestoreEmulator(db, 'localhost', 8080)
-// connectFunctionsEmulator(functions, "localhost", 5001);
-// connectAuthEmulator(auth, "http://localhost:9099");
-
+if (shouldUseFirebaseEmulators) {
+  connectFirestoreEmulator(db, 'localhost', 8080)
+  connectFunctionsEmulator(functions, "localhost", 5001);
+  connectAuthEmulator(auth, "http://localhost:9099");  
+}
 
 const addMessage = httpsCallable(functions, 'addMessage');
 
@@ -77,7 +82,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Messages:
+          Messages: {shouldUseFirebaseEmulators ? "dev" : "prod"}
         </p>
         {
           messages.map(message => <div key={message}>
@@ -85,9 +90,12 @@ function App() {
           </div>)
         }
 
-      <button type="button" onClick={handleClick}>
-        Click Me
-      </button>
+        <Button
+          variant="contained"
+          onClick={handleClick}
+        >
+          Add Message
+        </Button>
       </header>
     </div>
   );

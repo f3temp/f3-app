@@ -33,7 +33,7 @@
     }
   },
   "hosting": {
-    "predeploy": "npm run --prefix web build",
+    "predeploy": "npm run --prefix web build-production",
     "public": "web/build",
     "ignore": [
       "firebase.json",

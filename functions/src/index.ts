@@ -6,7 +6,6 @@ admin.initializeApp();
 
 const firestore = admin.firestore();
 
-
 export const addMessage = functions.https.onCall(async (data, context) => {
     const message = {
       "foo": "bar"
