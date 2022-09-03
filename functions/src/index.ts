@@ -1,23 +1,33 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+import * as functions from "firebase-functions"
+import * as firebaseAdmin from "firebase-admin"
 
-admin.initializeApp();
+firebaseAdmin.initializeApp()
 
+import apiHandlersByName from "./api-handlers"
 
-const firestore = admin.firestore();
+export const api = functions.https.onCall(async (data, context) => {
+  const name = data.name
+  const inputs = data.inputs
 
-export const addMessage = functions.https.onCall(async (data, context) => {
-    const message = {
-      "foo": "bar"
-    };
+  functions.logger.info("Got API request: " + name, ", inputs: ", inputs)
 
-    await firestore.collection("messages").add(message);
+  const handler = apiHandlersByName.get(name)
 
-    const allMessagesSnapshot = await firestore.collection("messages").get();
+  if (!handler) {
+    return {
+      "failure": `No API handler for name ${name}, all options are: ${JSON.stringify(apiHandlersByName.keys)} foo`
+    }
+  }
 
-    const messageStrings = allMessagesSnapshot.docs.map(doc => doc.data());
+  try {
+    const result = await handler(inputs, context)
 
     return {
-      "messages": messageStrings
-    };
-});
+      "success": result
+    }
+  } catch (error) {
+    return {
+      "failure": "An error occurred."
+    }
+  }
+})

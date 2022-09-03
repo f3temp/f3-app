@@ -42,8 +42,8 @@
     ],
     "rewrites": [
       {
-        "source": "/addMessage",
-        "function": "addMessage",
+        "source": "/api",
+        "function": "api",
         "region": "us-central1"
       },
       {
