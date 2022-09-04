@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './components/App';
+import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import { SidebarProvider } from 'src/contexts/SidebarContext';
+import { HelmetProvider } from 'react-helmet-async';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <HelmetProvider>
+      <SidebarProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SidebarProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );
 

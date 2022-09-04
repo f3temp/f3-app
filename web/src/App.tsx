@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import './App.css'
+//import './App.css'
 import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, getDocs, Firestore, DocumentData, connectFirestoreEmulator } from 'firebase/firestore'
 import { getAuth, signInAnonymously, connectAuthEmulator } from "firebase/auth"
@@ -7,7 +7,7 @@ import { getFunctions, httpsCallable, connectFunctionsEmulator, Functions } from
 
 import Button from '@mui/material/Button'
 
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -27,11 +27,19 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import ThemeProvider from './theme/ThemeProvider';
+
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+
+import { useRoutes } from 'react-router-dom';
+import router from './router';
+
 
 import {
   AddMessageInputs,
   AddMessageResult
-} from "../../../functions/src/api-interfaces"
+} from "../../functions/src/api-interfaces"
 
 const firebaseConfig = {
   apiKey: "AIzaSyA8c7S9GuMLZI9Wd3ioG0_g6vTR_G7pC_E",
@@ -45,7 +53,6 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
 const db = getFirestore(app)
 
 const shouldUseFirebaseEmulators = process.env.NODE_ENV === "development"
@@ -56,11 +63,17 @@ const functions = shouldUseFirebaseEmulators
   ? getFunctions(app)
   : getFunctions(app, mainUrl)
 
-if (shouldUseFirebaseEmulators) {
-  connectFirestoreEmulator(db, 'localhost', 8080)
-  connectFunctionsEmulator(functions, "localhost", 5001)
-  connectAuthEmulator(auth, "http://localhost:9099")
-}
+// const auth = getAuth(app)
+
+// if (shouldUseFirebaseEmulators) {
+//   connectFirestoreEmulator(db, 'localhost', 8080)
+//   connectFunctionsEmulator(functions, "localhost", 5001)
+//   connectAuthEmulator(auth, "http://localhost:9099")
+// }
+
+// export const authenticateAnonymously = () => {
+//   return signInAnonymously(auth)
+// }
 
 const apiCallable = httpsCallable(functions, 'api')
 
@@ -86,10 +99,6 @@ async function api<INPUTS, RESULT>(name: string, inputs: INPUTS): Promise<RESULT
   })
 }
 
-
-export const authenticateAnonymously = () => {
-  return signInAnonymously(auth)
-}
 
 const getMessages = async () => {
   const messagesCollection = collection(db, 'messages')
@@ -168,19 +177,19 @@ function App() {
     })
   }
 
-  useEffect(() => {
-    console.log("call authenticateAnonymously")
-    authenticateAnonymously().then(userCredential => {
-      console.log("got userCredential.user.uid: " + userCredential.user.uid)
-      setUserId(userCredential.user.uid)
-    })
-  }, [])
+  // useEffect(() => {
+  //   console.log("call authenticateAnonymously")
+  //   authenticateAnonymously().then(userCredential => {
+  //     console.log("got userCredential.user.uid: " + userCredential.user.uid)
+  //     setUserId(userCredential.user.uid)
+  //   })
+  // }, [])
 
-  useEffect(() => {
-    if (userId != null) {
-      refreshMessages()
-    }
-  }, [userId])
+  // useEffect(() => {
+  //   if (userId != null) {
+  //     refreshMessages()
+  //   }
+  // }, [userId])
 
 
   const handleAddMessageClick = () => {
@@ -197,143 +206,129 @@ function App() {
     })
   }
 
-  const mainListItems = (
-    <React.Fragment>
-      <ListItemButton>
-        <ListItemIcon>
-          <DashboardIcon />
-        </ListItemIcon>
-        <ListItemText primary="Dashboard" />
-      </ListItemButton>
-    </React.Fragment>
-  );
-
-  const secondaryListItems = (
-    <React.Fragment>
-      {/* <ListSubheader component="div" inset>
-        Other
-      </ListSubheader> */}
-    </React.Fragment>
-  );
+  const content = useRoutes(router);
 
   return (
-    <div className="App">
-      <ThemeProvider theme={mdTheme}>
-        <Box sx={{ display: 'flex' }}>
-          <CssBaseline />
-          <AppBar position="absolute" open={open}>
-            <Toolbar
-              sx={{
-                pr: '24px', // keep right padding when drawer closed
-              }}
-            >
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={toggleDrawer}
-                sx={{
-                  marginRight: '36px',
-                  ...(open && { display: 'none' }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                sx={{ flexGrow: 1 }}
-              >
-                F3 App
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer variant="permanent" open={open}>
-            <Toolbar
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                px: [1],
-              }}
-            >
-              <IconButton onClick={toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Toolbar>
-            <Divider />
-            <List component="nav">
-              {mainListItems}
-              <Divider sx={{ my: 1 }} />
-              {secondaryListItems}
-            </List>
-          </Drawer>
-          <Box
-            component="main"
-            sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
-              flexGrow: 1,
-              height: '100vh',
-              overflow: 'auto',
-            }}
-          >
-            <Toolbar />
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={14} md={8} lg={12}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: 600,
-                    }}
-                  >
-                    {userId ? <div>
-                      <Typography>
-                        Messages
-                      </Typography>
-
-                      <Button
-                        variant="contained"
-                        onClick={handleClearMessagesClick}
-                      >
-                        Clear Messages
-                      </Button>
-
-                      {
-                        messages.map((message, index) => <Typography
-                          key={`message-${index}`}
-                        >
-                          {message}
-                        </Typography>)
-                      }
-
-                      <Button
-                        variant="contained"
-                        onClick={handleAddMessageClick}
-                      >
-                        Add Message
-                      </Button>
-                    </div> : <div>
-                      <Typography>
-                        Authenticating...
-                      </Typography>
-                    </div>}
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Container>
-          </Box>
-        </Box>
-      </ThemeProvider>
-    </div>
+    <ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <CssBaseline />
+        {content}
+      </LocalizationProvider>
+    </ThemeProvider>
   )
 }
 
 export default App
+
+// <Box sx={{ display: 'flex' }}>
+// <CssBaseline />
+// <AppBar position="absolute" open={open}>
+//   <Toolbar
+//     sx={{
+//       pr: '24px', // keep right padding when drawer closed
+//     }}
+//   >
+//     <IconButton
+//       edge="start"
+//       color="inherit"
+//       aria-label="open drawer"
+//       onClick={toggleDrawer}
+//       sx={{
+//         marginRight: '36px',
+//         ...(open && { display: 'none' }),
+//       }}
+//     >
+//       <MenuIcon />
+//     </IconButton>
+//     <Typography
+//       component="h1"
+//       variant="h6"
+//       color="inherit"
+//       noWrap
+//       sx={{ flexGrow: 1 }}
+//     >
+//       F3 App
+//     </Typography>
+//   </Toolbar>
+// </AppBar>
+// <Drawer variant="permanent" open={open}>
+//   <Toolbar
+//     sx={{
+//       display: 'flex',
+//       alignItems: 'center',
+//       justifyContent: 'flex-end',
+//       px: [1],
+//     }}
+//   >
+//     <IconButton onClick={toggleDrawer}>
+//       <ChevronLeftIcon />
+//     </IconButton>
+//   </Toolbar>
+//   <Divider />
+//   <List component="nav">
+//     {mainListItems}
+//     <Divider sx={{ my: 1 }} />
+//     {secondaryListItems}
+//   </List>
+// </Drawer>
+// <Box
+//   component="main"
+//   sx={{
+//     backgroundColor: (theme) =>
+//       theme.palette.mode === 'light'
+//         ? theme.palette.grey[100]
+//         : theme.palette.grey[900],
+//     flexGrow: 1,
+//     height: '100vh',
+//     overflow: 'auto',
+//   }}
+// >
+//   <Toolbar />
+//   <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+//     <Grid container spacing={3}>
+//       <Grid item xs={14} md={8} lg={12}>
+//         <Paper
+//           sx={{
+//             p: 2,
+//             display: 'flex',
+//             flexDirection: 'column',
+//             height: 600,
+//           }}
+//         >
+//           {userId ? <div>
+//             <Typography>
+//               Messages
+//             </Typography>
+
+//             <Button
+//               variant="contained"
+//               onClick={handleClearMessagesClick}
+//             >
+//               Clear Messages
+//             </Button>
+
+//             {
+//               messages.map((message, index) => <Typography
+//                 key={`message-${index}`}
+//               >
+//                 {message}
+//               </Typography>)
+//             }
+
+//             <Button
+//               variant="contained"
+//               onClick={handleAddMessageClick}
+//             >
+//               Add Message
+//             </Button>
+//           </div> : <div>
+//             <Typography>
+//               Authenticating...
+//             </Typography>
+//           </div>}
+//         </Paper>
+//       </Grid>
+//     </Grid>
+//   </Container>
+// </Box>
+// </Box>
