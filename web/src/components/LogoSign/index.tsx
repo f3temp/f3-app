@@ -5,7 +5,8 @@ import {
   TooltipProps,
   tooltipClasses,
   styled,
-  useTheme
+  useTheme,
+  Typography
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -98,12 +99,12 @@ function Logo() {
   const theme = useTheme();
 
   return (
-    <TooltipWrapper
-      title="Tokyo Free White React Typescript Admin Dashboard"
-      arrow
-    >
-      <LogoWrapper to="/overview">
-        <Badge
+    // <TooltipWrapper
+    //   title="Tokyo Free White React Typescript Admin Dashboard"
+    //   arrow
+    // >
+    <LogoWrapper to="/">
+      {/* <Badge
           sx={{
             '.MuiBadge-badge': {
               fontSize: theme.typography.pxToRem(11),
@@ -113,16 +114,24 @@ function Logo() {
           }}
           overlap="circular"
           color="success"
-          badgeContent="2.0"
-        >
-          <LogoSignWrapper>
+          badgeContent=""
+        > */}
+      {/* <LogoSignWrapper>
+            <Typography>F3</Typography>
             <LogoSign>
               <LogoSignInner />
             </LogoSign>
-          </LogoSignWrapper>
-        </Badge>
-      </LogoWrapper>
-    </TooltipWrapper>
+          </LogoSignWrapper> */}
+      {/* </Badge> */}
+      <img
+        alt="F3 Logo"
+        src="/logo192.png"
+        style={{
+          height: 70
+        }}
+      />
+    </LogoWrapper>
+    // </TooltipWrapper>
   );
 }
 

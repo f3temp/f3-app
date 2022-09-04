@@ -107,7 +107,7 @@ function HeaderMenu() {
               primary="Forms"
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
             ref={ref}
@@ -124,7 +124,7 @@ function HeaderMenu() {
                 </Box>
               }
             />
-          </ListItem>
+          </ListItem> */}
         </List>
       </ListWrapper>
       <Menu anchorEl={ref.current} onClose={handleClose} open={isOpen}>

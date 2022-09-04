@@ -19,8 +19,6 @@ import HeaderButtons from './Buttons';
 import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
 
-// joshr TODO background-color: ${alpha(theme.header.background, 0.95)};
-
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
         height: ${theme.header.height};
@@ -29,6 +27,7 @@ const HeaderWrapper = styled(Box)(
         right: 0;
         z-index: 6;
         backdrop-filter: blur(3px);
+        background-color: ${alpha("#fff", 0.95)};
         position: fixed;
         justify-content: space-between;
         width: 100%;

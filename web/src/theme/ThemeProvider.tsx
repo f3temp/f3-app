@@ -21,26 +21,16 @@ type Props = {
 };
 
 const ThemeProviderWrapper: React.FC<Props> = (props) => {
-  // const curThemeName = localStorage.getItem('appTheme') || 'PureLightTheme';
-  // const [themeName, _setThemeName] = useState(curThemeName);
   const themeName = 'PureLightTheme';
   const theme = themeCreator(themeName);
-  // const setThemeName = (themeName: string): void => {
-  //   localStorage.setItem('appTheme', themeName);
-  //   _setThemeName(themeName);
-  // };
 
-  console.log("ThemeProviderWrapper render start")
-  console.log("ThemeProviderWrapper children", props.children)
-  console.log("ThemeProviderWrapper theme", theme)
-
-
-  return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
-  // return (
-  //   <CacheProvider value={muiCache}>
-
-  //   </CacheProvider>
-  // );
+  return (
+    <CacheProvider value={muiCache}>
+      <ThemeProvider theme={theme}>
+        {props.children}
+      </ThemeProvider>
+    </CacheProvider>
+  );
 };
 
 export default ThemeProviderWrapper;

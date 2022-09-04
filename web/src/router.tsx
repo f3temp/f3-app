@@ -6,26 +6,26 @@ import SidebarLayout from './layouts/SidebarLayout';
 import BaseLayout from './layouts/BaseLayout';
 
 import SuspenseLoader from './components/SuspenseLoader';
+import Dashboard from 'src/content/dashboards/Dashboard'
 import Crypto from 'src/content/dashboards/Crypto'
 
-const Loader = (Component: any) => (props: any) =>
-  (
-    <Suspense fallback={<SuspenseLoader />}>
-      <Component {...props} />
-    </Suspense>
-  );
+import Status404 from 'src/content/pages/Status/Status404'
+import Status500 from 'src/content/pages/Status/Status500'
 
+import Buttons from 'src/content/pages/Components/Buttons'
+import Modals from 'src/content/pages/Components/Modals'
+import Accordions from 'src/content/pages/Components/Accordions'
+import Tabs from 'src/content/pages/Components/Tabs'
+import Badges from 'src/content/pages/Components/Badges'
+import Tooltips from 'src/content/pages/Components/Tooltips'
+import Avatars from 'src/content/pages/Components/Avatars'
 
-// Dashboards
+import Cards from 'src/content/pages/Components/Cards'
+import Forms from 'src/content/pages/Components/Forms'
 
-
-
-// Status
-
-const Status404 = () => <div />
-const Status500 = () => <div />
-const StatusComingSoon = () => <div />
-const StatusMaintenance = () => <div />
+import Transactions from 'src/content/applications/Transactions'
+import UserProfile from 'src/content/applications/Users/profile'
+import UserSettings from 'src/content/applications/Users/settings'
 
 const routes: RouteObject[] = [
   {
@@ -34,7 +34,77 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <Crypto />
+        element: <Dashboard />
+      },
+      {
+        path: '/page-demos',
+        children: [
+          {
+            path: "crypto",
+            element: <Crypto />
+          },
+          {
+            path: "transactions",
+            element: <Transactions />
+          },
+          {
+            path: "user-profile",
+            element: <UserProfile />
+          },
+          {
+            path: "user-settings",
+            element: <UserSettings />
+          }
+        ]
+      },
+      {
+        path: '/component-demos',
+        children: [
+          {
+            path: '',
+            element: <Navigate to="buttons" replace />
+          },
+          {
+            path: 'buttons',
+            element: <Buttons />
+          },
+          {
+            path: 'modals',
+            element: <Modals />
+          },
+          {
+            path: 'accordions',
+            element: <Accordions />
+          },
+          {
+            path: 'tabs',
+            element: <Tabs />
+          },
+          {
+            path: 'badges',
+            element: <Badges />
+          },
+          {
+            path: 'tooltips',
+            element: <Tooltips />
+          },
+          {
+            path: 'avatars',
+            element: <Avatars />
+          },
+          {
+            path: 'cards',
+            element: <Cards />
+          },
+          {
+            path: 'forms',
+            element: <Forms />
+          }
+        ]
+      },
+      {
+        path: '*',
+        element: <Status404 />
       }
     ]
   }
